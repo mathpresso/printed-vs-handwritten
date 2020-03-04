@@ -4,11 +4,13 @@ __pycache__
 *.py[cod]
 *$py.class
 
-lines/training/all_printed
+!lines/training/handwritten/
 lines/training/handwritten/*
+!lines/training/printed/
 lines/training/printed/*
-lines/training/set/*
 
+!lines/validation/handwritten/
 lines/validation/handwritten/*
+!lines/validation/printed/
 lines/validation/printed/*
 
