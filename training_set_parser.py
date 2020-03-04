@@ -8,7 +8,7 @@ from PIL import Image
 
 printed_cnt = 0
 hand_cnt = 0
-PATH = '/Users/nutella/printed-vs-handwritten/lines/training'
+PATH = './lines/training'
 
 
 def parse_training_set(file, old_printed_cnt, old_hand_cnt):
@@ -41,7 +41,7 @@ def parse_training_set(file, old_printed_cnt, old_hand_cnt):
 
         # IM.save('image.png')
         if is_printed:
-            if int(random() * (2 ** 31)) % 50 == 0:
+            if int(random() * (2 ** 31)) % 40 == 0:
                 new_im = IM.crop((l, t, r, b))
                 printeds.append(new_im)
         if is_hand:
