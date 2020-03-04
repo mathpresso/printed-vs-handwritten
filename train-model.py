@@ -1,24 +1,22 @@
 import os
-import sys
-import torch
 import pickle
+import sys
+
+import torch
 from torch import nn
 from torch import optim
-from torchvision.datasets import ImageFolder
-from torchvision import transforms
 from torch.optim.lr_scheduler import LambdaLR
+from torchvision import transforms
+from torchvision.datasets import ImageFolder
 from tqdm import tqdm
 
 sys.path.append("../ocrd_typegroups_classifier")
 
-from ocrd_typegroups_classifier.network.vraec import vraec101
-from ocrd_typegroups_classifier.network.vraec import vraec50
 from ocrd_typegroups_classifier.typegroups_classifier import TypegroupsClassifier
 from ocrd_typegroups_classifier.data.qloss import QLoss
 from ocrd_typegroups_classifier.data.binarization import Otsu
 from ocrd_typegroups_classifier.data.binarization import Sauvola
 from ocrd_typegroups_classifier.network.densenet import densenet121
-from ocrd_typegroups_classifier.network.resnet import resnet18
 
 # Loading and preparing the network
 net = densenet121(num_classes=2)
