@@ -52,7 +52,7 @@ with torch.no_grad():
         path, _ = validation.samples[idx]
         if target==-1:
             continue
-        result = tgc.classify(sample, 224, 64, True)
+        result = tgc.classify(sample, 150, 12, True)
         highscore = max(result)
         label = tgc.classMap.cl2id[result[highscore]]
         if target==label:
