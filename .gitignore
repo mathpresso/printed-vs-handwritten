@@ -3,14 +3,3 @@
 __pycache__
 *.py[cod]
 *$py.class
-
-!lines/training/handwritten/
-lines/training/handwritten/*
-!lines/training/printed/
-lines/training/printed/*
-
-!lines/validation/handwritten/
-lines/validation/handwritten/*
-!lines/validation/printed/
-lines/validation/printed/*
-

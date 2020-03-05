@@ -48,18 +48,18 @@ if os.path.exists(os.path.join('ocrd_typegroups_classifier', 'models', 'classifi
 # transforms sequentially is not the same as having only one with
 # a larger range.
 trans = transforms.Compose([
-    transforms.RandomAffine(2, shear=2),
-    transforms.RandomAffine(2, shear=2),
-    transforms.RandomAffine(2, shear=2),
+    transforms.RandomAffine(180),
     #transforms.RandomCrop(224),
-    transforms.RandomResizedCrop(150, scale=(0.25, 1.0), ratio=(0.9, 1.11), interpolation=2),
-    transforms.ColorJitter(brightness=0.7, contrast=0.7, saturation=0.3, hue=0.02),
-    transforms.RandomGrayscale(p=0.75),
-    QLoss(min_q=2, max_q=60),
-    transforms.RandomChoice([
-        transforms.RandomApply((Otsu(),), p=0.1),
-        transforms.RandomApply((Sauvola(2, 8),), p=0.05)
-    ]),
+    # transforms.RandomResizedCrop(150, scale=(0.25, 1.0), ratio=(0.9, 1.11), interpolation=2),
+    transforms.RandomResizedCrop(150, scale=(0.9, 1.0), ratio=(0.9, 1.11)),
+    # transforms.Resize(150),
+    # transforms.ColorJitter(brightness=0.7, contrast=0.7, saturation=0.3, hue=0.02),
+    # transforms.RandomGrayscale(p=0.75),
+    # QLoss(min_q=2, max_q=60),
+    # transforms.RandomChoice([
+    #     transforms.RandomApply((Otsu(),), p=0.1),
+    #     transforms.RandomApply((Sauvola(2, 8),), p=0.05)
+    # ]),
     transforms.ToTensor()
 ])
 
@@ -71,13 +71,13 @@ validation.target_transform = tgc.classMap.get_target_transform(validation.class
 best_validation = 0
 
 data_loader = torch.utils.data.DataLoader(training,
-                                          batch_size=64,
+                                          batch_size=10,
                                           shuffle=True,
-                                          num_workers=4)
+                                          num_workers=2)
 
 # Iterating over the data
 print('Starting the training - grab a coffee and a good book!')
-for epoch in range(30):
+for epoch in range(100):
     # Modify learning rate
     scheduler.step()
     
@@ -119,7 +119,7 @@ for epoch in range(30):
             path, _ = validation.samples[idx]
             if target==-1:
                 continue
-            result = tgc.classify(sample, 224, 64, True)
+            result = tgc.classify(sample, 150, 10, True)
             highscore = max(result)
             label = tgc.classMap.cl2id[result[highscore]]
             targets.append(target)
@@ -144,37 +144,4 @@ for epoch in range(30):
         print('Network saved')
     else:
         tgc.save(os.path.join('ocrd_typegroups_classifier', 'models', 'classifier-last.tgc'))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
