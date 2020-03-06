@@ -14,8 +14,8 @@ sys.path.append("../ocrd_typegroups_classifier")
 
 from ocrd_typegroups_classifier.typegroups_classifier import TypegroupsClassifier
 # from ocrd_typegroups_classifier.data.qloss import QLoss
-# from ocrd_typegroups_classifier.data.binarization import Otsu
-# from ocrd_typegroups_classifier.data.binarization import Sauvola
+from ocrd_typegroups_classifier.data.binarization import Otsu
+from ocrd_typegroups_classifier.data.binarization import Sauvola
 from ocrd_typegroups_classifier.network.densenet import densenet121
 
 # Loading and preparing the network
@@ -53,13 +53,13 @@ trans = transforms.Compose([
     # transforms.RandomResizedCrop(150, scale=(0.25, 1.0), ratio=(0.9, 1.11), interpolation=2),
     transforms.RandomResizedCrop(150, scale=(0.9, 1.0), ratio=(0.9, 1.11), interpolation=2),
     # transforms.Resize(150),
-    # transforms.ColorJitter(brightness=0.7, contrast=0.7, saturation=0.3, hue=0.02),
-    # transforms.RandomGrayscale(p=0.75),
+    transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.01),
+    transforms.RandomGrayscale(p=0.1),
     # QLoss(min_q=2, max_q=60),
-    # transforms.RandomChoice([
-    #     transforms.RandomApply((Otsu(),), p=0.1),
-    #     transforms.RandomApply((Sauvola(2, 8),), p=0.05)
-    # ]),
+    transforms.RandomChoice([
+        transforms.RandomApply((Otsu(),), p=0.1),
+        transforms.RandomApply((Sauvola(2, 8),), p=0.5)
+    ]),
     transforms.ToTensor()
 ])
 
