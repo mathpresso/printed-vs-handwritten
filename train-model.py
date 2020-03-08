@@ -16,10 +16,10 @@ from ocrd_typegroups_classifier.typegroups_classifier import TypegroupsClassifie
 # from ocrd_typegroups_classifier.data.qloss import QLoss
 from ocrd_typegroups_classifier.data.binarization import Otsu
 from ocrd_typegroups_classifier.data.binarization import Sauvola
-from ocrd_typegroups_classifier.network.densenet import densenet121
+from ocrd_typegroups_classifier.network.densenet import densenet121, densenet161
 
 # Loading and preparing the network
-net = densenet121(num_classes=2)
+net = densenet161(num_classes=2)
 # net = resnet18(num_classes=12)
 
 # Some settings for the training
