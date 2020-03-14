@@ -179,17 +179,20 @@ class ResNet(nn.Module):
         layers = []
         layers.append(block(self.inplanes, planes, stride, downsample, self.groups,
                             self.base_width, previous_dilation, norm_layer))
+        layers.append(nn.Dropout(0.2))
         self.inplanes = planes * block.expansion
         for _ in range(1, blocks):
             layers.append(block(self.inplanes, planes, groups=self.groups,
                                 base_width=self.base_width, dilation=self.dilation,
                                 norm_layer=norm_layer))
+            layers.append(nn.Dropout(0.2))
 
         return nn.Sequential(*layers)
 
     def forward(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
+        x = nn.Dropout(0.1)(x)
         x = self.relu(x)
         x = self.maxpool(x)
 
@@ -200,6 +203,7 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         x = x.reshape(x.size(0), -1)
+        x = nn.Dropout(0.4)(x)
         x = self.fc(x)
 
         return x

@@ -49,9 +49,9 @@ class TypegroupsClassifier:
         self.classMap = ClassMap(groups)
         self.network = network
         if device is None:
-            self.dev = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+            self.dev = torch.device("cuda")
         else:
-            self.dev = device
+            self.dev = torch.device("cuda")
         network.to(self.dev)
     
     @classmethod
@@ -75,7 +75,7 @@ class TypegroupsClassifier:
             raise Exception('TypegroupsClassifier.load() requires a string or a file')
         res = pickle.load(input)
         # If trained with CUDA and loaded on a device without CUDA
-        res.dev = torch.device(res.dev if torch.cuda.is_available() else "cpu")
+        res.dev = torch.device("cuda")
         res.network.to(res.dev)
         return res
         
@@ -124,7 +124,7 @@ class TypegroupsClassifier:
     def run(self, pil_image, stride, batch_size=32, score_as_key=False):
         return self.classify(pil_image, stride, batch_size, score_as_key)
     
-    def classify(self, pil_image, stride, batch_size, score_as_key=False, max_width=1000):
+    def classify(self, pil_image, stride, batch_size, score_as_key=False, max_width=1000, normalize=True):
         """ Classifies a PIL image, returning a map with class names and
             corresponding scores.
             
@@ -152,9 +152,12 @@ class TypegroupsClassifier:
         
         if pil_image.size[0]>max_width:
             pil_image = pil_image.resize((max_width, round(pil_image.size[1]*float(max_width)/pil_image.size[0])), Image.BILINEAR)
-        crop_size = min(224, pil_image.size[0])
+        crop_size = min(32, pil_image.size[0])
         crop_size = min(crop_size, pil_image.size[1])
-        tensorize = transforms.ToTensor()
+        if normalize:
+            tensorize = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
+        else:
+            tensorize = transforms.ToTensor()
         was_training = self.network.training
         self.network.eval()
         with torch.no_grad():
@@ -163,7 +166,8 @@ class TypegroupsClassifier:
             batch = []
             for x in range(0, pil_image.size[0], stride):
                 for y in range(0, pil_image.size[1], stride):
-                    crop = tensorize(pil_image.crop((x, y, x+crop_size, y+crop_size)))
+                    # crop = tensorize(pil_image.crop((x, y, x+crop_size, y+crop_size)))
+                    crop = tensorize(pil_image.resize((128, 128)))
                     batch.append(crop)
                     if len(batch) >= batch_size:
                         tensors = torch.stack(batch).to(self.dev)

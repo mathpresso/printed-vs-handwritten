@@ -35,8 +35,8 @@ tgc = TypegroupsClassifier(
     },
     net
 )
-if os.path.exists(os.path.join('ocrd_typegroups_classifier', 'models', 'classifier.tgc')):
-    tgc = TypegroupsClassifier.load(os.path.join('ocrd_typegroups_classifier', 'models', 'classifier.tgc'))
+if os.path.exists(os.path.join('ocrd_typegroups_classifier', 'models', 'classifier-last.tgc')):
+    tgc = TypegroupsClassifier.load(os.path.join('ocrd_typegroups_classifier', 'models', 'classifier-last.tgc'))
 else:
     print('Could not load a model to evaluate')
     quit(1)
@@ -52,7 +52,7 @@ with torch.no_grad():
         path, _ = validation.samples[idx]
         if target==-1:
             continue
-        result = tgc.classify(sample, 224, 64, True)
+        result = tgc.classify(sample, 150, 10, True)
         highscore = max(result)
         label = tgc.classMap.cl2id[result[highscore]]
         if target==label:
